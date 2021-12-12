@@ -1,0 +1,164 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Shear;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLProfile;
+import javax.media.opengl.awt.GLCanvas;
+import javax.swing.JFrame;
+
+
+public class Shear implements GLEventListener{
+
+    /**
+     * @param args the command line arguments
+     */
+    
+    GL2 gl;
+    static GLProfile profile = GLProfile.get(GLProfile.GL2);
+    static GLCapabilities capabilities = new GLCapabilities(profile);
+    // The canvas 
+    static GLCanvas glcanvas = new GLCanvas(capabilities);
+    
+    static float X1, Y1, X2, Y2, X3, Y3, X4, Y4;
+    
+  
+    public static void main(String[] args) {
+	// TODO code application logic here  
+        //getting the capabilities object of GL2 profile
+	   	  
+	      
+	Shear l = new Shear();
+	//creating frame
+	glcanvas.addGLEventListener(l);
+	glcanvas.setSize(600, 580);
+	      
+	final JFrame frame = new JFrame ("Rectangle Shear");
+	//adding canvas to frame
+             
+	frame.getContentPane().add(glcanvas);
+	frame.setSize(frame.getContentPane().getPreferredSize());
+	frame.setVisible(true);
+    }
+    public void display(GLAutoDrawable drawable) {
+        gl = drawable.getGL().getGL2();
+        
+        try{
+       
+	    
+	    String input_file = "Coordinates.txt";
+            
+	    BufferedReader br = new BufferedReader(new FileReader(input_file));
+       
+            
+            String  axis = (br.readLine());
+            float f = Float.parseFloat(br.readLine());
+            
+            
+            String[] Point_Parts = br.readLine().split(" ");
+	    String X_Part = Point_Parts[0];
+            String Y_Part = Point_Parts[1];
+            
+            X1 = Float.parseFloat(X_Part);
+            Y1 = Float.parseFloat(Y_Part);
+            
+            Point_Parts = br.readLine().split(" ");
+	        X_Part = Point_Parts[0];
+            Y_Part = Point_Parts[1];
+            
+            X2 = Float.parseFloat(X_Part);
+            Y2 = Float.parseFloat(Y_Part);
+            
+            Point_Parts = br.readLine().split(" ");
+	    X_Part = Point_Parts[0];
+            Y_Part = Point_Parts[1];
+            
+            X3 = Float.parseFloat(X_Part);
+            Y3 = Float.parseFloat(Y_Part);
+            
+            Point_Parts = br.readLine().split(" ");
+	    X_Part = Point_Parts[0];
+            Y_Part = Point_Parts[1];
+            
+            X4 = Float.parseFloat(X_Part);
+            Y4 = Float.parseFloat(Y_Part);
+            br.close();
+            
+            
+            DrawRectangle();
+            
+            shearRect(axis,f);
+            
+            DrawRectangle();
+        }
+	 
+        catch (Exception ex) {
+            System.err.println("Error");
+        }
+        
+    }
+    
+    
+    public void DrawRectangle(){
+        gl.glBegin (GL2.GL_LINES);//static field
+        gl.glColor3f(1.0f, 0.0f, 0.2f); // red
+        gl.glVertex2d(X1,Y1);
+        gl.glVertex2d(X2,Y2);
+        
+        gl.glColor3f(0.2f, 1.0f, 0.4f); // green
+        gl.glVertex2d(X2,Y2);
+        gl.glVertex2d(X3,Y3);
+        
+        gl.glColor3f(0.2f, 0.4f, 1.0f); // blue
+        gl.glVertex2d(X3,Y3);
+        gl.glVertex2d(X4,Y4);
+        
+        gl.glColor3f(1.0f, 0.5f, 0.2f); // orange
+        gl.glVertex2d(X1,Y1);
+        gl.glVertex2d(X4,Y4);
+        
+    
+        gl.glEnd();
+         
+    }
+
+    public void shearRect(String s, float f){
+        if(s.equals("x")) {
+        	X3=X3+Y3*f;
+        	X4=X4+Y4*f;
+        }
+        else if(s.equals("y")) {
+        	Y3=Y3+X3*f;
+        	Y2=Y2+X2*f;
+        }
+        
+       
+        
+    }
+    
+    public void dispose(GLAutoDrawable arg0) {
+       //method body
+    }
+
+
+    public void init(GLAutoDrawable drawable) {
+       // method body
+            //4. drive the display() in a loop
+             }
+
+    public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
+       // method body
+    }
+    //end of main
+}//end of classimport javax.media.opengl.GL2;
+
+
+

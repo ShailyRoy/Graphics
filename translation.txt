@@ -1,0 +1,115 @@
+import javax.media.opengl.GL2;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLProfile;
+import javax.media.opengl.awt.GLCanvas;
+import javax.swing.JFrame;
+
+public class translation implements GLEventListener{
+    
+    static GLProfile profile = GLProfile.get(GLProfile.GL2);
+    static GLCapabilities capabilities = new GLCapabilities(profile);
+    // The canvas 
+    static GLCanvas glcanvas = new GLCanvas(capabilities);
+    
+   public static void main(String[] args) {
+          //getting the capabilities object of GL2 profile
+             
+          
+          translation l = new translation();
+          //creating frame
+          glcanvas.addGLEventListener(l);
+          glcanvas.setSize(600,400);
+          
+          final JFrame frame = new JFrame ("straight Line");
+          //adding canvas to frame
+          frame.getContentPane().add(glcanvas);
+          frame.setSize(frame.getContentPane().getPreferredSize());
+          frame.setVisible(true);
+          
+       }
+   public void display(GLAutoDrawable drawable) {
+      final GL2 gl = drawable.getGL().getGL2();
+             gl.glBegin (GL2.GL_POINTS);//static field
+             //1
+             double y0 = -0.8;
+             double y1 = -0.5;
+             double x0 = -0.8, x1 = -0.5;
+             double tx = 0.5;
+             double ty = 0.5;
+             
+             while(y0<y1){
+                 //double x0 = -1;
+                 //double x1 = -0.5;
+                 gl.glVertex2d(x0,y0);
+                 gl.glVertex2d(x1, y0);
+                 gl.glVertex2d(x0+tx,y0+ty);
+                 gl.glVertex2d(x1+tx, y0+ty);
+                
+                 y0+=0.001;
+             }
+             y0 = -0.8;
+             while(x0<x1) {
+            	 gl.glVertex2d(x0, y0);
+            	 gl.glVertex2d(x0, y1);
+            	 gl.glVertex2d(x0+tx, y0+ty);
+            	 gl.glVertex2d(x0+tx, y1+ty);
+            	 
+            	 x0 = x0+0.001;
+             }
+             
+            /* double y0 = -0.8;
+             double y1 = -0.5;
+             double x0 = -0.8, x1 = -0.5;
+             double t = 5;
+            // double ty = 1.873;
+             double x=x0, y=x0;
+             double xx=x1, yy=y1;
+             while(y0<y1){
+                 //double x0 = -1;
+                 //double x1 = -0.5;
+                 gl.glVertex2d(x0,y0);
+                 gl.glVertex2d(x1, y0);
+                 y = x0*Math.sin(t)+ y0*Math.cos(t);
+                // yy = x0*Math.sin(t)+ y1* Math.cos(t);
+                 x = x0*Math.cos(t)- y0* Math.sin(t);
+                 xx = x1*Math.cos(t)- y1* Math.sin(t);
+                 gl.glVertex2d(x,y);
+                 gl.glVertex2d(xx, y);
+                
+                 y0+=0.001;
+             }
+             y0 = -0.8;
+             while(x0<x1) {
+            	 gl.glVertex2d(x0, y0);
+            	 gl.glVertex2d(x0, y1);
+            	 y = x0*Math.sin(t)+ y0* Math.cos(t);
+                 yy = x0*Math.sin(t)+ y1* Math.cos(t);
+                 x = x0*Math.cos(t)- y0* Math.sin(t);
+                 //xx = x1*Math.cos(tx)- y0* Math.sin(ty);
+            	 gl.glVertex2d(x, y);
+            	 gl.glVertex2d(x, yy);
+            	 
+            	 x0 = x0+0.001;
+             }*/
+             
+          gl.glEnd();
+         
+   }
+   
+   public void dispose(GLAutoDrawable arg0) {
+      //method body
+   }
+
+   
+   public void init(GLAutoDrawable drawable) {
+      // method body
+       //4. drive the display() in a loop
+        }
+   
+   public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
+      // method body
+   }
+   //end of main
+}//end of classimport javax.media.opengl.GL2;

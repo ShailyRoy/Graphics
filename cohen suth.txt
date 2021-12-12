@@ -1,0 +1,201 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.util.Random;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLProfile;
+import javax.media.opengl.awt.GLCanvas;
+import javax.swing.JFrame;
+
+public class Cohen_Sutherland_Algorithm implements GLEventListener {
+
+	/**
+	 * @param args
+	 *            the command line arguments
+	 */
+	GL2 gl;
+	float X_Max = 0.5f, X_Min = -0.5f, Y_Min = -0.5f, Y_Max = 0.5f;
+
+	static GLProfile profile = GLProfile.get(GLProfile.GL2);
+	static GLCapabilities capabilities = new GLCapabilities(profile);
+	// The canvas
+	static GLCanvas glcanvas = new GLCanvas(capabilities);
+
+	public static void main(String[] args) {
+		// TODO code application logic here
+		// getting the capabilities object of GL2 profile
+
+		Cohen_Sutherland_Algorithm l = new Cohen_Sutherland_Algorithm();
+		// creating frame
+
+		glcanvas.addGLEventListener(l);
+		glcanvas.setSize(900, 900);
+
+		final JFrame frame = new JFrame("Cohen - Sutherland");
+		// adding canvas to frame
+
+		frame.getContentPane().add(glcanvas);
+		frame.setSize(frame.getContentPane().getPreferredSize());
+		frame.setVisible(true);
+	}
+
+	public void display(GLAutoDrawable drawable) {
+		gl = drawable.getGL().getGL2();
+
+		try {
+
+			float x0 = 0, y0 = 0, x1 = 0, y1 = 0;
+			Random rd = new Random();
+			// String PrintLine = "";
+			int NumberOfLines = 1000; //
+			for (int i = 0; i < NumberOfLines; i++) {
+				// get random points
+				x0 = rd.nextFloat() * (1.0f - (-1.0f)) + (-1.0f);
+				y0 = rd.nextFloat() * (1.0f - (-1.0f)) + (-1.0f);
+				x1 = rd.nextFloat() * (1.0f - (-1.0f)) + (-1.0f);
+				y1 = rd.nextFloat() * (1.0f - (-1.0f)) + (-1.0f);
+				Cohen_Sutherland(x0, y0, x1, y1);
+			}
+			DrawWindow();
+		}
+		// }
+		catch (Exception ex) {
+			System.out.println(ex);
+		}
+	}
+
+	public void DrawWindow() {
+
+		// Y top
+		gl.glBegin(GL2.GL_LINES);// static field
+		gl.glColor3f(0f, 1f, 1f);
+		gl.glVertex2d(-1.0f, Y_Max);
+		gl.glVertex2d(1.0f, Y_Max);
+		gl.glEnd();
+
+		// Y Bottom
+		gl.glBegin(GL2.GL_LINES);// static field
+		gl.glColor3f(0f, 1f, 1f);
+		gl.glVertex2d(-1.0f, Y_Min);
+		gl.glVertex2d(1.0f, Y_Min);
+		gl.glEnd();
+
+		// X Left
+		gl.glBegin(GL2.GL_LINES);// static field
+		gl.glColor3f(0f, 1f, 1f);
+		gl.glVertex2d(X_Min, 1.0f);
+		gl.glVertex2d(X_Min, -1.0f);
+		gl.glEnd();
+
+		// X Right
+		gl.glBegin(GL2.GL_LINES);// static field
+		gl.glColor3f(0f, 1f, 1f);
+		gl.glVertex2d(X_Max, 1.0f);
+		gl.glVertex2d(X_Max, -1.0f);
+		gl.glEnd();
+	}
+
+	private int MakeCode(float x, float y) {
+		int code = 0;
+
+		if (y > Y_Max) {
+			code = code + 8;
+		} else if (y < Y_Min) {
+			code = code + 4;
+		}
+		if (x > X_Max) {
+			code = code + 2;
+		} else if (x < X_Min) {
+			code = code + 1;
+		}
+		return code;
+	}
+
+	public void Cohen_Sutherland(float x0, float y0, float x1, float y1) {
+		int Code0 = MakeCode(x0, y0);
+		int Code1 = MakeCode(x1, y1);
+
+		int Code = 0;
+
+		float x_coordinate = 0.0f, y_coordinate = 0.0f;
+
+		while (true) {
+			if ((Code0 | Code1) == 0) { // Fully Accepted
+
+				gl.glBegin(GL2.GL_LINES);// static field
+				gl.glColor3f(0f, 1f, 0f);
+				gl.glVertex2d(x0, y0);
+				gl.glVertex2d(x1, y1);
+				gl.glEnd();
+				break;
+			} else if ((Code0 & Code1) != 0) { // Fully Rejected
+
+				gl.glBegin(GL2.GL_LINES);// static field
+				gl.glColor3f(1f, 0f, 0f);
+				gl.glVertex2d(x0, y1);
+				gl.glVertex2d(x1, y1);
+				gl.glEnd();
+				break;
+			}
+
+			else { // Partially Accepted
+
+				gl.glBegin(GL2.GL_LINES);// static field
+				gl.glColor3f(0f, 0f, 1f);
+				gl.glVertex2d(x0, y1);
+				gl.glVertex2d(x1, y1);
+				gl.glEnd();
+
+				if (Code0 != 0) {
+					Code = Code0;
+				} else {
+					Code = Code1;
+				}
+
+				if ((Code & 8) != 0) {
+					y_coordinate = Y_Max;
+					x_coordinate = x0 + (y_coordinate - y0) / (y1 - y0) * (x1 - x0);
+				} else if ((Code & 4) != 0) {
+					y_coordinate = Y_Min;
+					x_coordinate = x0 + (y_coordinate - y0) / (y1 - y0) * (x1 - x0);
+				} else if ((Code & 2) != 0) {
+					x_coordinate = X_Max;
+					y_coordinate = y0 + (x_coordinate - x0) / (x1 - x0) * (y1 - y0);
+				} else if ((Code & 1) != 0) {
+					x_coordinate = X_Min;
+					y_coordinate = y0 + (x_coordinate - x0) / (x1 - x0) * (y1 - y0);
+				}
+
+				if (Code == Code0) {
+					x0 = x_coordinate;
+					y0 = y_coordinate;
+					Code0 = MakeCode(x0, y0);
+				} else {
+					x1 = x_coordinate;
+					y1 = y_coordinate;
+					Code1 = MakeCode(x1, y1);
+				}
+			}
+		}
+	}
+
+	public void dispose(GLAutoDrawable arg0) {
+		// method body
+	}
+
+	public void init(GLAutoDrawable drawable) {
+		// method body
+		// 4. drive the display() in a loop
+	}
+
+	public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
+		// method body
+	}
+	// end of main
+}// end of classimport javax.media.opengl.GL2;

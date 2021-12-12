@@ -1,0 +1,188 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package rectangle_rotation;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLProfile;
+import javax.media.opengl.awt.GLCanvas;
+import javax.swing.JFrame;
+
+
+public class rectangle_rotate implements GLEventListener{
+
+    /**
+     * @param args the command line arguments
+     */
+    
+    GL2 gl;
+    static GLProfile profile = GLProfile.get(GLProfile.GL2);
+    static GLCapabilities capabilities = new GLCapabilities(profile);
+    // The canvas 
+    static GLCanvas glcanvas = new GLCanvas(capabilities);
+    
+    static float X1, Y1, X2, Y2, X3, Y3, X4, Y4;
+    
+  
+    public static void main(String[] args) {
+	// TODO code application logic here  
+        //getting the capabilities object of GL2 profile
+	   	  
+	      
+	rectangle_rotate l = new rectangle_rotate();
+	//creating frame
+	glcanvas.addGLEventListener(l);
+	glcanvas.setSize(600, 580);
+	      
+	final JFrame frame = new JFrame ("Rectangle Rotation");
+	//adding canvas to frame
+             
+	frame.getContentPane().add(glcanvas);
+	frame.setSize(frame.getContentPane().getPreferredSize());
+	frame.setVisible(true);
+    }
+    public void display(GLAutoDrawable drawable) {
+        gl = drawable.getGL().getGL2();
+        
+        try{
+       
+	    
+	    String input_file = "Coordinates.txt";
+            
+	    BufferedReader br = new BufferedReader(new FileReader(input_file));
+       
+            br.readLine();
+            
+            double angle = Double.parseDouble(br.readLine());
+            
+            //skip next line
+            br.readLine();
+            
+            String[] Point_Parts = br.readLine().split(" ");
+	    String X_Part = Point_Parts[0];
+            String Y_Part = Point_Parts[1];
+            
+            X1 = Float.parseFloat(X_Part);
+            Y1 = Float.parseFloat(Y_Part);
+            
+            Point_Parts = br.readLine().split(" ");
+	        X_Part = Point_Parts[0];
+            Y_Part = Point_Parts[1];
+            
+            X2 = Float.parseFloat(X_Part);
+            Y2 = Float.parseFloat(Y_Part);
+            
+            Point_Parts = br.readLine().split(" ");
+	    X_Part = Point_Parts[0];
+            Y_Part = Point_Parts[1];
+            
+            X3 = Float.parseFloat(X_Part);
+            Y3 = Float.parseFloat(Y_Part);
+            
+            Point_Parts = br.readLine().split(" ");
+	    X_Part = Point_Parts[0];
+            Y_Part = Point_Parts[1];
+            
+            X4 = Float.parseFloat(X_Part);
+            Y4 = Float.parseFloat(Y_Part);
+            
+        
+            DrawRectangle();
+            
+            RotateRectangle(angle);
+            
+            DrawRectangle();
+        }
+	 
+        catch (Exception ex) {
+            System.err.println("Error");
+        }
+        
+    }
+    
+    
+    public void DrawRectangle(){
+        gl.glBegin (GL2.GL_LINES);//static field
+        gl.glColor3f(1.0f, 0.0f, 0.0f); // red
+        gl.glVertex2d(X1,Y1);
+        gl.glVertex2d(X2,Y2);
+        
+        gl.glColor3f(0.0f, 1.0f, 0.0f); // green
+        gl.glVertex2d(X2,Y2);
+        gl.glVertex2d(X3,Y3);
+        
+        gl.glColor3f(0.0f, 0.0f, 1.0f); // blue
+        gl.glVertex2d(X3,Y3);
+        gl.glVertex2d(X4,Y4);
+        
+        gl.glColor3f(1.0f, 0.5f, 0.0f); // orange
+        gl.glVertex2d(X1,Y1);
+        gl.glVertex2d(X4,Y4);
+        
+    
+        gl.glEnd();
+         
+    }
+
+    public void RotateRectangle(double angle){
+        float Cosine = (float) Math.cos((angle * Math.PI) / 180);
+        float Sine = (float) Math.sin((angle * Math.PI) / 180);
+        
+        float x1_bar = ((X1 * Cosine) - (Y1 * Sine));
+        float y1_bar = ((X1 * Sine) + (Y1 * Cosine));
+        
+        X1 = x1_bar;
+        Y1 = y1_bar;
+        
+        float x2_bar = ((X2 * Cosine) - (Y2 * Sine));
+        float y2_bar = ((X2 * Sine) + (Y2 * Cosine));
+        
+        X2 = x2_bar;
+        Y2 = y2_bar;
+        
+        float x3_bar = ((X3 * Cosine) - (Y3 * Sine));
+        float y3_bar = ((X3 * Sine) + (Y3 * Cosine));
+        
+        X3 = x3_bar;
+        Y3 = y3_bar;
+        
+        float x4_bar = ((X4 * Cosine) - (Y4 * Sine));
+        float y4_bar = ((X4 * Sine) + (Y4 * Cosine));
+        
+        X4 = x4_bar;
+        Y4 = y4_bar;
+        
+       
+        
+    }
+    
+    public void dispose(GLAutoDrawable arg0) {
+       //method body
+    }
+
+
+    public void init(GLAutoDrawable drawable) {
+       // method body
+            //4. drive the display() in a loop
+             }
+
+    public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
+       // method body
+    }
+    //end of main
+}//end of classimport javax.media.opengl.GL2;
+
+
+
